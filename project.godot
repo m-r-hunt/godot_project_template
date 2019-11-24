@@ -1,0 +1,95 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Object",
+"class": "Utils",
+"language": "GDScript",
+"path": "res://scripts/utils.gd"
+} ]
+_global_script_class_icons={
+"Utils": ""
+}
+
+[application]
+
+config/name="Project Template"
+config/icon="res://icon.png"
+
+[autoload]
+
+ScaleControl="*res://scripts/scale_control.gd"
+DebugHelper="*res://scripts/debug_helper.gd"
+
+[debug]
+
+gdscript/warnings/treat_warnings_as_errors=true
+
+[display]
+
+window/dpi/allow_hidpi=true
+window/stretch/mode="2d"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "aseprite_import" )
+
+[gui]
+
+theme/custom_font="res://m5x7.tres"
+
+[importer_defaults]
+
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": true,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": true,
+"process/invert_color": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
+}
+wav={
+"compress/mode": 0,
+"edit/loop": false,
+"edit/normalize": true,
+"edit/trim": false,
+"force/8_bit": false,
+"force/max_rate": false,
+"force/max_rate_hz": 44100,
+"force/mono": false
+}
+
+[my_settings]
+
+debug/auto_maximize=false
+
+[physics]
+
+2d/default_gravity_vector=Vector2( 0, 0 )
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+environment/default_environment="res://default_env.tres"
+quality/dynamic_fonts/use_oversampling=false

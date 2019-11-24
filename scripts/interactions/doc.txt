@@ -1,0 +1,20 @@
+Interation System
+
+The classes in this directory define the interactions between decoupled objects in the game.
+
+Each class corresponds to a function which can be called on something, with an instance of the class as the only argument.
+
+Example:
+	obj.place(Place.new(/* args */)) 
+tells the object to place itself using the supplied arguments.
+
+Duck typing is used to define/find the interaction functions (like place() above). Use has_method() if you're not sure if the thing you're interacting with supports the interaction.
+
+Example:
+	if obj.has_method("place"):
+		// obj supports placing so do it
+		obj.place(Place.new(/* args */))
+	else:
+		// default behaviour if necessary...
+
+Over simple duck typing, this system provides better documentation of the arguments to each interaction (based on class content) and easier mainainence/catching of bugs, using the argument class.
