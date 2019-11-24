@@ -21,6 +21,9 @@ func _process(_delta):
 	if scale != pixel_scale:
 		pixel_scale = int(max(1, scale))
 		window_resize()
+	if Input.is_action_just_pressed("fullscreen"):
+		OS.window_fullscreen = !OS.window_fullscreen
+		window_resize()
 
 
 
