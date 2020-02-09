@@ -25,7 +25,6 @@ config/icon="res://icon.png"
 
 [autoload]
 
-ScaleControl="*res://scripts/scale_control.gd"
 DebugHelper="*res://scripts/debug_helper.gd"
 
 [debug]
@@ -35,11 +34,12 @@ gdscript/warnings/treat_warnings_as_errors=true
 [display]
 
 window/dpi/allow_hidpi=true
-window/stretch/mode="2d"
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "aseprite_import" )
+enabled=PoolStringArray( "aseprite_import", "tiled_import" )
 
 [gui]
 
@@ -97,6 +97,7 @@ debug/auto_maximize=false
 [rendering]
 
 quality/driver/driver_name="GLES2"
+quality/2d/use_pixel_snap=true
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
 environment/default_environment="res://default_env.tres"
