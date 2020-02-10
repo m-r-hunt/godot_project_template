@@ -16,4 +16,4 @@ func _exit_tree():
 
 func get_plugin_icon():
 	# Non copyright infringing Aseprite icon rip off, not sure what this actually does
-	return preload("res://addons/aseprite_import/icon.png")
+	return load("res://addons/aseprite_import/icon.png")
