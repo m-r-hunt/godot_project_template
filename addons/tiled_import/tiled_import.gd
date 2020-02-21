@@ -7,6 +7,10 @@ tool
 # Somewhat cribbed from https://github.com/leonkrause/aseprite-import/tree/master/addons/eska.aseprite_importer (MIT License)
 # - mainly the import plugin structure and basic import flow. Actual scene construction is totally new and custom for my needs.
 
+# Possible improvements:
+#  Parse Tiled tile collision data into Godot TileSet collision shapes
+#  Pass tile custom properties into custom layer functions
+#  Pass object custom properties into scene construction somehow
 
 func get_importer_name():
 	return "Tiled Import"
@@ -42,6 +46,15 @@ func get_preset_name(_preset):
 
 func get_import_options(_preset):
 	var options = [
+		# On Object layers, objects will be loaded from the path object_folder + Tiled object type + ".tscn"
+		{"name": "object_folder", "default_value": "res://scenes/objects/"},
+		
+		# Dictionary mapping layer name to script path (string) used to load that layer.
+		# Given script should have a function:
+		# static func run(_tiled_layer, _tileset, _tilewidth, _tileheight, root_node):
+		# This should process layer data (given via _tiled_layer) and insert a node as a child of/owned by the given root_node
+		# The intent is to allow "tile object" layers - painted as tile layers but loaded into nodes via custom logic
+		{"name": "custom_layers", "default_value": {}},
 	]
 	return options
 
@@ -52,7 +65,7 @@ func get_import_order():
 	return 101
 
 
-func import(src, target_path, _import_options, _r_platform_variants, _r_gen_files):
+func import(src, target_path, import_options, _r_platform_variants, _r_gen_files):
 	var tmx_path = src
 	var tmx_dir = src.get_base_dir()
 	target_path = target_path + "." + get_save_extension()
@@ -135,13 +148,18 @@ func import(src, target_path, _import_options, _r_platform_variants, _r_gen_file
 	for ts in tilesets:
 		ts.add_to_godot_tileset(tileset)
 	
+	var custom_layers = import_options["custom_layers"]
 	for layer in layers:
-		var map = layer.make_godot_tilemap(tileset, int(map_attributes["tilewidth"]), int(map_attributes["tileheight"]))
-		root_node.add_child(map)
-		map.owner = root_node
+		if layer.name in custom_layers:
+			var script = load(custom_layers[layer.name])
+			script.run(layer, tileset, int(map_attributes["tilewidth"]), int(map_attributes["tileheight"]), root_node)
+		else:
+			var map = layer.make_godot_tilemap(tileset, int(map_attributes["tilewidth"]), int(map_attributes["tileheight"]))
+			root_node.add_child(map)
+			map.owner = root_node
 	
 	for group in object_groups:
-		group.make_godot_node(root_node)
+		group.make_godot_node(root_node, import_options["object_folder"])
 
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(root_node)
@@ -262,14 +280,14 @@ func parse_tile(parser: XMLParser):
 			XMLParser.NODE_ELEMENT:
 				match parser.get_node_name():
 					"properties":
-						tile_properties = parse_tile_properties(parser)
+						tile_properties = parse_properties_node(parser)
 			XMLParser.NODE_ELEMENT_END:
 				if parser.get_node_name() == "tile":
 					break
 	return tile_properties
 
 
-func parse_tile_properties(parser: XMLParser):
+func parse_properties_node(parser: XMLParser):
 	var properties = {}
 	while true:
 		parser.read()
@@ -313,6 +331,10 @@ func parse_object_group(parser: XMLParser):
 					"object":
 						var attributes = get_attribute_dict(parser)
 						objects.append(attributes)
+					"properties":
+						assert(len(objects) > 0)
+						var properties = parse_properties_node(parser)
+						objects.back()["properties"] = properties
 			XMLParser.NODE_ELEMENT_END:
 				if parser.get_node_name() == "objectgroup":
 					break
@@ -329,14 +351,18 @@ class TiledObjectGroup:
 		objects = _objects
 
 
-	func make_godot_node(owner: Node):
+	func make_godot_node(owner: Node, folder: String):
 		var node = Node2D.new()
 		node.name = name
 		owner.add_child(node)
 		node.owner = owner
 		for object in objects:
-			var object_scene = load("res://scenes/objects/" + object["type"] + ".tscn")
+			var object_scene = load(folder + object["type"] + ".tscn")
 			var instance = object_scene.instance()
+			if "properties" in object:
+				print(object["properties"])
+				for k in object["properties"]:
+					instance.set(k, int(object["properties"][k]))
 			node.add_child(instance)
 			instance.owner = owner
 			instance.position = Vector2(int(object["x"]), int(object["y"]))
@@ -356,14 +382,7 @@ class TiledLayer:
 		width = _width
 		height = _height
 
-
-	func make_godot_tilemap(tileset: TileSet, tilewidth: int, tileheight: int):
-		var node = TileMap.new()
-		node.name = name
-		node.tile_set = tileset
-		node.cell_tile_origin = TileMap.TILE_ORIGIN_CENTER
-		node.cell_size = Vector2(tilewidth, tileheight)
-		node.cell_y_sort = true
+	func process_csv() -> PoolIntArray:
 		var buf = ""
 		var idata = PoolIntArray()
 		for i in range(0, len(layer_data)):
@@ -374,6 +393,16 @@ class TiledLayer:
 				buf += layer_data[i]
 		if buf != "":
 			idata.append(int(buf.strip_edges()))
+		return idata
+
+	func make_godot_tilemap(tileset: TileSet, tilewidth: int, tileheight: int):
+		var node = TileMap.new()
+		node.name = name
+		node.tile_set = tileset
+		node.cell_tile_origin = TileMap.TILE_ORIGIN_CENTER
+		node.cell_size = Vector2(tilewidth, tileheight)
+		node.cell_y_sort = true
+		var idata = process_csv()
 		for x in range(0, width):
 			for y in range(0, height):
 				node.set_cell(x, y, idata[y*width + x])

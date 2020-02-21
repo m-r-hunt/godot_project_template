@@ -6,7 +6,7 @@ var import_plugin
 
 
 func _enter_tree():
-	import_plugin = preload('res://addons/aseprite_import/aseprite_import.gd').new()
+	import_plugin = load('res://addons/aseprite_import/aseprite_import.gd').new()
 	add_import_plugin(import_plugin)
 
 
