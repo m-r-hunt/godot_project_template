@@ -14,7 +14,7 @@ func _ready():
 	Utils.e_connect($PauseScreen/TitleButton, "pressed", self, "on_title_pressed")
 	sort_selection()
 	
-	Utils.e_connect($Button, "pressed", self, "on_button_pressed") # Throwaway
+	Utils.e_connect($ActualGameplay/Button, "pressed", self, "on_button_pressed") # Throwaway
 
 
 # Throwaway
