@@ -28,7 +28,11 @@ _global_script_class_icons={
 
 config/name="Project Template"
 run/main_scene="res://scenes/screens/main.tscn"
-config/icon="res://icon.png"
+config/icon="res://sprites/icon.png"
+
+[audio]
+
+default_bus_layout="res://resources/default_bus_layout.tres"
 
 [autoload]
 
@@ -51,7 +55,7 @@ enabled=PoolStringArray( "aseprite_import", "tiled_import" )
 
 [gui]
 
-theme/custom_font="res://m5x7.tres"
+theme/custom_font="res://resources/fonts/m5x7.tres"
 
 [importer_defaults]
 
@@ -115,5 +119,5 @@ quality/driver/driver_name="GLES2"
 quality/2d/use_pixel_snap=true
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
-environment/default_environment="res://default_env.tres"
+environment/default_environment="res://resources/default_env.tres"
 quality/dynamic_fonts/use_oversampling=false
