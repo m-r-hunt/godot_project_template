@@ -4,7 +4,6 @@ extends Node
 # Must be bools. Should turn on/off all permanent debug features this way.
 const debug_settings = [
 	"my_settings/debug/auto_maximize",
-	"my_settings/debug/short_rounds",
 ]
 
 
