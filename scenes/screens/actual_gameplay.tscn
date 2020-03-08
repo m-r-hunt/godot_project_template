@@ -3,10 +3,10 @@
 [node name="ActualGameplay" type="Node2D"]
 
 [node name="Button" type="Button" parent="."]
-margin_left = 327.0
-margin_top = 157.0
-margin_right = 453.0
-margin_bottom = 179.0
+margin_left = 154.0
+margin_top = 87.0
+margin_right = 280.0
+margin_bottom = 109.0
 text = "Finish The Game"
 __meta__ = {
 "_edit_use_anchors_": false

@@ -17,8 +17,5 @@ __meta__ = {
 }
 
 [node name="TitleButton" parent="." instance=ExtResource( 2 )]
-margin_left = 418.0
-margin_top = 382.0
-margin_right = 498.0
-margin_bottom = 407.0
+position = Vector2( 258, 220 )
 text = "Return to tiltle"

@@ -7,24 +7,15 @@
 script = ExtResource( 2 )
 
 [node name="PlayButton" parent="." instance=ExtResource( 1 )]
-margin_left = 202.0
-margin_top = 127.0
-margin_right = 282.0
-margin_bottom = 152.0
+position = Vector2( 261, 113 )
 text = "Play"
 
 [node name="CreditsButton" parent="." instance=ExtResource( 1 )]
-margin_left = 232.0
-margin_top = 245.0
-margin_right = 312.0
-margin_bottom = 270.0
+position = Vector2( 263, 166 )
 text = "Credits"
 
 [node name="QuitButton" parent="." instance=ExtResource( 1 )]
-margin_left = 272.0
-margin_top = 374.0
-margin_right = 352.0
-margin_bottom = 399.0
+position = Vector2( 264, 214 )
 text = "Quit"
 
 [node name="Label" type="Label" parent="."]

@@ -17,8 +17,5 @@ __meta__ = {
 }
 
 [node name="CreditsButton" parent="." instance=ExtResource( 2 )]
-margin_left = 417.0
-margin_top = 488.0
-margin_right = 497.0
-margin_bottom = 513.0
+position = Vector2( 434, 357 )
 text = "CREDTIS"
