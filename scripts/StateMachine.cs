@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Reflection;
 
 public class StateMachine<T>
@@ -33,6 +34,7 @@ public class StateMachine<T>
 
     public string CurrentState { get; private set; }
     private readonly T _owner;
+    private bool _signalled;
 
     public StateMachine(T owner, string current)
     {
@@ -47,16 +49,22 @@ public class StateMachine<T>
         
         _owner = owner;
         CurrentState = current;
+        _states[CurrentState].Enter(_owner);
     }
 
     private void Emit(string signal)
     {
+        Contract.Assert(!_signalled);
         var c = _states[CurrentState];
+        c.Exit(_owner);
         CurrentState = c.Signals[signal];
+        _states[CurrentState].Enter(_owner);
+        _signalled = true;
     }
 
     public void Process(float dt)
     {
+        _signalled = false;
         _states[CurrentState].Process(_owner, dt);
     }
 }
