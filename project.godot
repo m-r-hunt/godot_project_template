@@ -23,6 +23,10 @@ config/icon="res://sprites/icon.png"
 
 default_bus_layout="res://resources/default_bus_layout.tres"
 
+[autoload]
+
+FullscreenManager="*res://scripts/fullscreen_manager.gd"
+
 [debug]
 
 gdscript/warnings/treat_warnings_as_errors=true
