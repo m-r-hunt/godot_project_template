@@ -96,7 +96,7 @@ func import(src, target_path, import_options, _r_platform_variants, _r_gen_files
 		print("Texture file %s is not a texture" % texture_path)
 		return ERR_INVALID_DATA
 
-	var sprite = Sprite.new()
+	var sprite = preload("res://addons/aseprite_import/AsepriteSprite.cs").new()
 	sprite.name = "AsepriteSprite"
 	sprite.texture = texture
 	sprite.hframes = json.frames.size()
