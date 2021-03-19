@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GameStates/MainMenu/MainMenu.cs" type="Script" id=1]
+[ext_resource path="res://Objects/Button/Button.tscn" type="PackedScene" id=2]
+
+[node name="MainMenu" type="Node"]
+script = ExtResource( 1 )
+Transitions = {
+"Credits": "res://GameStates/Credits/Credits.tscn",
+"Play": "res://GameStates/Gameplay/Gameplay.tscn"
+}
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Play" parent="Node2D" instance=ExtResource( 2 )]
+position = Vector2( 429.464, 279.388 )
+Text = "Play"
+
+[node name="Credits" parent="Node2D" instance=ExtResource( 2 )]
+position = Vector2( 425.688, 322.806 )
+Text = "Credits"
+
+[node name="Quit" parent="Node2D" instance=ExtResource( 2 )]
+position = Vector2( 427.576, 369.056 )
+Text = "Quit"
+[connection signal="Pressed" from="Node2D/Play" to="." method="OnPlayClicked"]
+[connection signal="Pressed" from="Node2D/Credits" to="." method="OnCreditsClicked"]
+[connection signal="Pressed" from="Node2D/Quit" to="." method="OnQuitClicked"]

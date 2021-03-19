@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GameStates/Credits/Credits.cs" type="Script" id=1]
+[ext_resource path="res://Objects/Button/Button.tscn" type="PackedScene" id=2]
+
+[node name="Credits" type="Node"]
+script = ExtResource( 1 )
+Transitions = {
+"Finished": "res://GameStates/MainMenu/MainMenu.tscn"
+}
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="CreditsText" type="Label" parent="Node2D"]
+margin_right = 865.0
+margin_bottom = 392.0
+text = "Some credits and stuff"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DoneButton" parent="Node2D" instance=ExtResource( 2 )]
+position = Vector2( 520.076, 545.561 )
+Text = "Done"
+[connection signal="Pressed" from="Node2D/DoneButton" to="." method="OnFinishClicked"]

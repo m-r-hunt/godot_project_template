@@ -8,36 +8,20 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "Reference",
-"class": "StateMachine",
-"language": "GDScript",
-"path": "res://scripts/state_machine.gd"
-}, {
-"base": "Object",
-"class": "Utils",
-"language": "GDScript",
-"path": "res://scripts/utils.gd"
-} ]
+_global_script_classes=[  ]
 _global_script_class_icons={
-"StateMachine": "",
-"Utils": ""
+
 }
 
 [application]
 
 config/name="Project Template"
-run/main_scene="res://scenes/screens/main.tscn"
+run/main_scene="res://GameStates/Main/main.tscn"
 config/icon="res://sprites/icon.png"
 
 [audio]
 
 default_bus_layout="res://resources/default_bus_layout.tres"
-
-[autoload]
-
-DebugHelper="*res://scripts/debug_helper.gd"
-FullscreenManager="res://scripts/fullscreen_manager.gd"
 
 [debug]
 
