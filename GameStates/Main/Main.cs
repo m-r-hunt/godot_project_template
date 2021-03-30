@@ -17,6 +17,7 @@ public class Main : Node2D
         if (_currentState != null)
         {
             RemoveChild(_currentState);
+            _currentState.QueueFree();
         }
         _currentState = scene.Instance() as GameState;
         AddChild(_currentState);
