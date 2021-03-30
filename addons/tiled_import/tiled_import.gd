@@ -206,10 +206,17 @@ class TiledSet:
 			ts.create_tile(tid)
 			ts.tile_set_texture(tid, tx)
 			ts.tile_set_region(tid, Rect2((i % columns) * tile_width, (i / columns) * tile_height, tile_width, tile_height))
-			if tiles.has(i) and tiles[i]["collision"] == "true":
-				var shape = RectangleShape2D.new()
-				shape.extents = Vector2(tile_width / 2, tile_height / 2)
-				ts.tile_add_shape(tid, shape, Transform2D(0, Vector2(tile_width / 2, tile_height / 2)))
+			if tiles.has(i):
+				if "collision" in tiles[i].properties and tiles[i].properties["collision"] == "true":
+					var shape = RectangleShape2D.new()
+					shape.extents = Vector2(tile_width / 2, tile_height / 2)
+					ts.tile_add_shape(tid, shape, Transform2D(0, Vector2(tile_width / 2, tile_height / 2)))
+				for obj in tiles[i].objects:
+					var shape = RectangleShape2D.new()
+					var half_width = float(obj["width"])/2
+					var half_height = float(obj["height"])/2
+					shape.extents = Vector2(half_width, half_height)
+					ts.tile_add_shape(tid, shape, Transform2D(0, Vector2(float(obj["x"]) + half_width, float(obj["y"]) + half_height)))
 
 
 func parse_tileset(firstgid: int, source: String, base_dir: String):
@@ -272,8 +279,17 @@ func parse_tileset(firstgid: int, source: String, base_dir: String):
 		int(tileset_attributes["tileheight"])
 	)
 
+class TiledTile:
+	var properties: Dictionary
+	var objects: Array
+	
+	func _init(_properties: Dictionary, _objects: Array):
+		properties = _properties
+		objects = _objects
+
 func parse_tile(parser: XMLParser):
 	var tile_properties = {}
+	var objects = []
 	while true:
 		parser.read()
 		match parser.get_node_type():
@@ -281,10 +297,12 @@ func parse_tile(parser: XMLParser):
 				match parser.get_node_name():
 					"properties":
 						tile_properties = parse_properties_node(parser)
+					"objectgroup":
+						objects = parse_object_group(parser)
 			XMLParser.NODE_ELEMENT_END:
 				if parser.get_node_name() == "tile":
 					break
-	return tile_properties
+	return TiledTile.new(tile_properties, objects)
 
 
 func parse_properties_node(parser: XMLParser):
