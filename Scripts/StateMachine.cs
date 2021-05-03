@@ -2,69 +2,70 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Reflection;
+using Godot;
 
-public class StateMachine<T>
+namespace Caracal.Scripts
 {
-    public abstract class IState
+    public class StateMachine<T> : StateMachine<T, State<T>>
     {
-        public Dictionary<string, string> Signals;
-
-        public event Action<string> SignalEmitted;
-
-        protected void Emit(string signal)
+        public StateMachine(T owner, string current)
+            : base(owner, current)
         {
-            SignalEmitted?.Invoke(signal);
         }
-
-        public virtual void Enter(T self)
-        {
-            
-        }
-
-        public virtual void Exit(T self)
-        {
-            
-        }
-        
-        public abstract void Process(T self, float dt);
     }
 
-    private readonly Dictionary<string, IState> _states = new Dictionary<string, IState>();
-
-
-    public string CurrentState { get; private set; }
-    private readonly T _owner;
-    private bool _signalled;
-
-    public StateMachine(T owner, string current)
+    public class StateMachine<T, TState>
+        where TState : State<T>
     {
-        foreach (var t in typeof(T).GetNestedTypes(BindingFlags.NonPublic))
+        private readonly Dictionary<string, TState> _states = new Dictionary<string, TState>();
+
+        public string CurrentState { get; set; }
+        public TState Current => _states[CurrentState];
+        private readonly T _owner;
+        private bool _signalled;
+
+        public StateMachine(T owner, string current)
         {
-            if (typeof(IState).IsAssignableFrom(t))
+            foreach (var t in typeof(T).GetNestedTypes(BindingFlags.NonPublic))
             {
-                _states[t.Name] = (IState)Activator.CreateInstance(t);
-                _states[t.Name].SignalEmitted += Emit;
+                if (typeof(TState).IsAssignableFrom(t))
+                {
+                    _states[t.Name] = (TState)Activator.CreateInstance(t);
+                    _states[t.Name].SignalEmitted += Emit;
+
+                    foreach (var attr in t.GetCustomAttributes<TransitionAttribute>())
+                    {
+                        _states[t.Name].Signals[attr.Signal] = attr.NewState;
+                    }
+                }
             }
+
+            _owner = owner;
+            CurrentState = current;
+            _states[CurrentState].Enter(_owner);
         }
-        
-        _owner = owner;
-        CurrentState = current;
-        _states[CurrentState].Enter(_owner);
-    }
 
-    private void Emit(string signal)
-    {
-        Contract.Assert(!_signalled);
-        var c = _states[CurrentState];
-        c.Exit(_owner);
-        CurrentState = c.Signals[signal];
-        _states[CurrentState].Enter(_owner);
-        _signalled = true;
-    }
+        private void Emit(object sender, string signal)
+        {
+            if (sender != _states[CurrentState])
+            {
+                GD.PushWarning("Signal emitted by inactive state");
+                return;
+            }
 
-    public void Process(float dt)
-    {
-        _signalled = false;
-        _states[CurrentState].Process(_owner, dt);
+            Contract.Assert(!_signalled);
+            var c = _states[CurrentState];
+            c.Exit(_owner);
+            CurrentState = c.Signals[signal];
+            _states[CurrentState].Enter(_owner);
+            _signalled = true;
+        }
+
+        public void Process(float dt)
+        {
+            _signalled = false;
+            _states[CurrentState].Process(_owner, dt);
+            _signalled = false;
+        }
     }
 }
