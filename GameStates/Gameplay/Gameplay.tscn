@@ -12,6 +12,7 @@ Transitions = {
 [node name="Node2D" type="Node2D" parent="."]
 
 [node name="TempFinishButton" parent="Node2D" instance=ExtResource( 2 )]
-position = Vector2( 465.331, 213.316 )
+position = Vector2( 130.331, 157.316 )
 Text = "Finish Play"
+
 [connection signal="Pressed" from="Node2D/TempFinishButton" to="." method="OnFinishClicked"]

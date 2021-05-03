@@ -20,6 +20,7 @@ __meta__ = {
 }
 
 [node name="DoneButton" parent="Node2D" instance=ExtResource( 2 )]
-position = Vector2( 520.076, 545.561 )
+position = Vector2( 191.076, 165.561 )
 Text = "Done"
+
 [connection signal="Pressed" from="Node2D/DoneButton" to="." method="OnFinishClicked"]
