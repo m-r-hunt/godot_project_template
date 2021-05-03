@@ -2,16 +2,20 @@ extends EditorPlugin
 tool
 
 
-var import_plugin
+var tmx_import_plugin
+var world_import_plugin
 
 
 func _enter_tree():
-	import_plugin = load('res://addons/tiled_import/tiled_import.gd').new()
-	add_import_plugin(import_plugin)
+	tmx_import_plugin = load('res://addons/tiled_import/tmx_import.gd').new()
+	add_import_plugin(tmx_import_plugin)
+	world_import_plugin = load('res://addons/tiled_import/world_import.gd').new()
+	add_import_plugin(world_import_plugin)
 
 
 func _exit_tree():
-	remove_import_plugin(import_plugin)
+	remove_import_plugin(tmx_import_plugin)
+	remove_import_plugin(world_import_plugin)
 
 
 func get_plugin_icon():

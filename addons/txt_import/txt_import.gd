@@ -21,7 +21,7 @@ func get_recognized_extensions():
 
 
 func get_save_extension():
-	return "tres"
+	return "res"
 
 
 func get_resource_type():
